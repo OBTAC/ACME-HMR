@@ -1,0 +1,251 @@
+sip-manipulation
+        name                                    OPTUS-INTERNAL-OUT
+        description                             OPTUS TEST-Convert Src+Dest FNN to E164
+        split-headers                           
+        join-headers                            
+        header-rule
+                name                                    ModReqURI
+                header-name                             request-uri
+                action                                  manipulate
+                comparison-type                         case-sensitive
+                msg-type                                any
+                methods                                 ACK,BYE,CANCEL,INVITE,NOTIFY,PRACK,SUBSCRIBE
+                match-value                             
+                new-value                               
+                element-rule
+                        name                                    ModUserNational
+                        parameter-name                          
+                        type                                    uri-user
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         pattern-rule
+                        match-value                             ^0([2-8][0-9]{8})$
+                        new-value                               \+61+$1
+                element-rule
+                        name                                    ModHost
+                        parameter-name                          
+                        type                                    uri-host
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         case-sensitive
+                        match-value                             
+                        new-value                               $REMOTE_IP
+        header-rule
+                name                                    ModTo
+                header-name                             To
+                action                                  manipulate
+                comparison-type                         case-sensitive
+                msg-type                                any
+                methods                                 ACK,BYE,CANCEL,INVITE,NOTIFY,PRACK,SUBSCRIBE
+                match-value                             
+                new-value                               
+                element-rule
+                        name                                    ModUser
+                        parameter-name                          
+                        type                                    uri-phone-number-only
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         pattern-rule
+                        match-value                             ^0([2-8][0-9]{8})$
+                        new-value                               \+61+$1
+                element-rule
+                        name                                    ModHost
+                        parameter-name                          
+                        type                                    uri-host
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         case-sensitive
+                        match-value                             
+                        new-value                               $REMOTE_IP
+        header-rule
+                name                                    ModFrom
+                header-name                             From
+                action                                  manipulate
+                comparison-type                         case-sensitive
+                msg-type                                any
+                methods                                 ACK,BYE,CANCEL,INVITE,NOTIFY,PRACK,SUBSCRIBE
+                match-value                             
+                new-value                               
+                element-rule
+                        name                                    ModUser
+                        parameter-name                          
+                        type                                    uri-phone-number-only
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         pattern-rule
+                        match-value                             ^0([2-8][0-9]{8})$
+                        new-value                               \+61+$1
+                element-rule
+                        name                                    ModHost
+                        parameter-name                          
+                        type                                    uri-host
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         case-sensitive
+                        match-value                             
+                        new-value                               $REMOTE_IP
+        header-rule
+                name                                    ModPAI
+                header-name                             p-asserted-identity
+                action                                  manipulate
+                comparison-type                         case-sensitive
+                msg-type                                any
+                methods                                 ACK,BYE,CANCEL,INVITE,NOTIFY,PRACK,SUBSCRIBE
+                match-value                             
+                new-value                               
+                element-rule
+                        name                                    ModUser
+                        parameter-name                          
+                        type                                    uri-phone-number-only
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         pattern-rule
+                        match-value                             ^0([2-8][0-9]{8})$
+                        new-value                               \+61+$1
+                element-rule
+                        name                                    ModHost
+                        parameter-name                          
+                        type                                    uri-host
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         case-sensitive
+                        match-value                             
+                        new-value                               $LOCAL_IP
+        header-rule
+                name                                    ModContact
+                header-name                             Contact
+                action                                  manipulate
+                comparison-type                         case-sensitive
+                msg-type                                any
+                methods                                 ACK,BYE,CANCEL,INVITE,NOTIFY,PRACK,SUBSCRIBE
+                match-value                             
+                new-value                               
+                element-rule
+                        name                                    ModUser
+                        parameter-name                          
+                        type                                    uri-phone-number-only
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         pattern-rule
+                        match-value                             ^0([2-8][0-9]{8})$
+                        new-value                               \+61+$1
+        header-rule
+                name                                    storeAllowMethods
+                header-name                             Allow
+                action                                  store
+                comparison-type                         pattern-rule
+                msg-type                                any
+                methods                                 
+                match-value                             (.*)(,UPDATE)(.*)
+                new-value                               
+        header-rule
+                name                                    removeUpdateFromAllow
+                header-name                             Allow
+                action                                  manipulate
+                comparison-type                         boolean
+                msg-type                                any
+                methods                                 
+                match-value                             $storeAllowMethods
+                new-value                               
+                element-rule
+                        name                                    deleteUpdateFromAllow
+                        parameter-name                          
+                        type                                    header-value
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         case-sensitive
+                        match-value                             
+                        new-value                               $storeAllowMethods.$1+$storeAllowMethods.$3
+        mime-sdp-rule
+                name                                    Remove3g0oBTC
+                msg-type                                any
+                methods                                 
+                action                                  manipulate
+                comparison-type                         case-sensitive
+                match-value                             
+                new-value                               
+                sdp-media-rule
+                        name                                    Del3GOoBT
+                        media-type                              audio
+                        action                                  manipulate
+                        comparison-type                         case-sensitive
+                        match-value                             
+                        new-value                               
+                        sdp-line-rule
+                                name                                    DelLine
+                                type                                    a
+                                action                                  delete
+                                comparison-type                         pattern-rule
+                                match-value                             3gOoBTC
+                                new-value                               
+        mime-sdp-rule
+                name                                    FixFax
+                msg-type                                any
+                methods                                 
+                action                                  manipulate
+                comparison-type                         case-sensitive
+                match-value                             
+                new-value                               
+                sdp-media-rule
+                        name                                    DelFax
+                        media-type                              image
+                        action                                  delete
+                        comparison-type                         case-sensitive
+                        match-value                             
+                        new-value                               
+        header-rule
+                name                                    Checkfor183
+                header-name                             @status-line
+                action                                  store
+                comparison-type                         case-sensitive
+                msg-type                                reply
+                methods                                 INVITE
+                match-value                             
+                new-value                               
+                element-rule
+                        name                                    CheckCode
+                        parameter-name                          
+                        type                                    status-code
+                        action                                  store
+                        match-val-type                          any
+                        comparison-type                         case-sensitive
+                        match-value                             183
+                        new-value                               
+        header-rule
+                name                                    ChangeFTR
+                header-name                             @status-line
+                action                                  manipulate
+                comparison-type                         case-sensitive
+                msg-type                                reply
+                methods                                 INVITE
+                match-value                             
+                new-value                               
+                element-rule
+                        name                                    ChangeFTR
+                        parameter-name                          
+                        type                                    reason-phrase
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         boolean
+                        match-value                             $Checkfor183.$CheckCode.$0
+                        new-value                               Ringing
+        header-rule
+                name                                    change183to180
+                header-name                             @status-line
+                action                                  manipulate
+                comparison-type                         case-sensitive
+                msg-type                                any
+                methods                                 
+                match-value                             
+                new-value                               
+                element-rule
+                        name                                    modStatusCode
+                        parameter-name                          
+                        type                                    status-code
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         case-sensitive
+                        match-value                             183
+                        new-value                               180
+        last-modified-by                        admin@203.202.141.123
+        last-modified-date                      2017-04-20 04:44:46
