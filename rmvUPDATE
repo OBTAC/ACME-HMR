@@ -1,0 +1,27 @@
+        header-rule
+                name                                    storeAllowMethods
+                header-name                             Allow
+                action                                  store
+                comparison-type                         pattern-rule
+                msg-type                                any
+                methods                                 
+                match-value                             (.*)(,UPDATE)(.*)
+                new-value                               
+        header-rule
+                name                                    removeUpdateFromAllow
+                header-name                             Allow
+                action                                  manipulate
+                comparison-type                         boolean
+                msg-type                                any
+                methods                                 
+                match-value                             $storeAllowMethods
+                new-value                               
+                element-rule
+                        name                                    deleteUpdateFromAllow
+                        parameter-name                          
+                        type                                    header-value
+                        action                                  replace
+                        match-val-type                          any
+                        comparison-type                         case-sensitive
+                        match-value                             
+                        new-value                               $storeAllowMethods.$1+$storeAllowMethods.$3
