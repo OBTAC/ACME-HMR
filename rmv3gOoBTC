@@ -1,0 +1,22 @@
+        mime-sdp-rule
+                name                                    Remove3g0oBTC
+                msg-type                                any
+                methods                                 
+                action                                  manipulate
+                comparison-type                         case-sensitive
+                match-value                             
+                new-value                               
+                sdp-media-rule
+                        name                                    Del3GOoBT
+                        media-type                              audio
+                        action                                  manipulate
+                        comparison-type                         case-sensitive
+                        match-value                             
+                        new-value                               
+                        sdp-line-rule
+                                name                                    DelLine
+                                type                                    a
+                                action                                  delete
+                                comparison-type                         pattern-rule
+                                match-value                             3gOoBTC
+                                new-value                               
